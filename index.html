@@ -152,7 +152,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .tabs button{flex:1;border-radius:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:500;color:var(--color-text-2)}
 .tabs button.on{background:rgba(255,255,255,.1);color:var(--color-primary)}
 .tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.fab{flex:none;width:68px;height:68px;border-radius:34px;background:var(--color-primary);color:#111;font-size:34px;font-weight:400;display:grid;place-items:center;box-shadow:0 6px 18px rgba(255,184,0,.35);transition:transform .15s}
+.fab{flex:none;width:68px;height:68px;border-radius:34px;background:var(--color-primary);color:#111;display:flex;align-items:center;justify-content:center;padding:0;line-height:0;box-shadow:0 6px 18px rgba(255,184,0,.35);transition:transform .15s}
 .fab:active{transform:scale(.94)}
 .home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;border-radius:3px;background:var(--color-text);transform:translateX(-50%);z-index:30}
 
@@ -323,7 +323,7 @@ svg.chart{width:100%;height:auto;display:block;touch-action:none}
           <button data-tab="Мой доход"><svg viewBox="0 0 24 24"><path d="M6 20v-7M12 20V5M18 20v-10"/></svg>Мой доход</button>
           <button data-tab="Обсудить"><svg viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 3v-3a1 1 0 0 1-1-1z"/></svg>Обсудить</button>
         </div>
-        <button class="fab" id="fab" aria-label="Добавить доход">+</button>
+        <button class="fab" id="fab" aria-label="Добавить доход"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
 
       <div class="overlay" id="overlay"></div>
