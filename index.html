@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сравни доход — концепт редизайна</title>
+<meta name="description" content="Интерактивный прототип редизайна раздела «Сравни доход» Telegram mini-app для курьеров. UX/UI: Максим Кощеев">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Unbounded:wght@500;600;700&family=Wix+Madefor+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg-page:#0B0B0D;
+  --color-bg-card:#18181B;
+  --color-bg-card-2:#232327;
+  --color-text:#F5F5F7;
+  --color-text-2:#8E8E93;
+  --color-primary:#FFB800;
+  --color-primary-bg:rgba(255,184,0,.14);
+  --color-success:#34C77B;
+  --color-success-bg:rgba(52,199,123,.16);
+  --color-fill-subtle:rgba(255,255,255,.08);
+  --color-desk:#F4F3FA;
+  --color-desk-ink:#05133E;
+  --color-desk-text:#2E3441;
+  --color-desk-accent:#5B77F4;
+  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",system-ui,sans-serif;
+  --font-display:"Unbounded",var(--font-ui);
+  --font-desk:"Wix Madefor Display",var(--font-ui);
+}
+*{box-sizing:border-box;margin:0;padding:0;letter-spacing:0}
+html,body{height:100%}
+body{background:var(--color-desk);font-family:var(--font-desk);color:var(--color-desk-text);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* ---------- desktop shell ---------- */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:64px;padding:48px 32px}
+.about{width:440px;display:flex;flex-direction:column;gap:20px}
+.about .over{font-size:13px;font-weight:600;color:var(--color-desk-accent);text-transform:uppercase}
+.about h1{font-family:var(--font-display);font-weight:500;font-size:40px;line-height:1.1;color:var(--color-desk-ink)}
+.about p.lead{font-size:17px;line-height:1.5;opacity:.8}
+.about .card{background:#fff;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.about .row{display:flex;gap:12px;align-items:flex-start}
+.about .num{flex:none;width:28px;height:28px;border-radius:14px;background:var(--color-desk-accent);color:#fff;font-family:var(--font-display);font-size:12px;font-weight:600;display:grid;place-items:center}
+.about .row b{display:block;color:var(--color-desk-ink);font-weight:600;font-size:15px;margin-bottom:2px}
+.about .row span{font-size:14px;line-height:1.45;opacity:.75}
+.about .links{display:flex;flex-wrap:wrap;gap:8px}
+.about .links a,.about .links button{font-size:14px;font-weight:600;color:var(--color-desk-ink);background:#fff;border-radius:100px;padding:10px 16px;text-decoration:none}
+.about .links .accent{background:var(--color-desk-accent);color:#fff}
+.about .note{font-size:12px;opacity:.55;line-height:1.45}
+
+.phone{position:relative;width:390px;height:844px;border-radius:52px;background:var(--color-bg-page);overflow:hidden;box-shadow:0 30px 80px rgba(5,19,62,.25),0 0 0 10px #111,0 0 0 11px #2a2a2e;flex:none}
+@media (max-width:980px){.about{display:none}.stage{padding:24px 0}}
+@media (max-width:500px){
+  body{background:var(--color-bg-page)}
+  .stage{padding:0;display:block}
+  .phone{width:100%;height:100dvh;border-radius:0;box-shadow:none}
+}
+
+/* ---------- app ---------- */
+.app{position:absolute;inset:0;font-family:var(--font-ui);color:var(--color-text);font-size:15px}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;display:none;padding-bottom:140px}
+.screen::-webkit-scrollbar{display:none}
+.screen.on{display:block}
+.status{height:54px;display:flex;align-items:center;justify-content:space-between;padding:12px 30px 0 38px;font-weight:600;font-size:16px}
+.status .bat{background:var(--color-text);color:#000;border-radius:5px;font-size:11px;font-weight:700;padding:1px 5px}
+.tg{display:flex;justify-content:space-between;align-items:center;padding:4px 16px 8px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:100px;background:var(--color-fill-subtle);padding:8px 14px;font-weight:500;font-size:15px;white-space:nowrap}
+.sticky-top{position:sticky;top:0;z-index:5;background:linear-gradient(var(--color-bg-page) 80%,rgba(11,11,13,0))}
+.content{padding:8px 16px 0;display:flex;flex-direction:column;gap:20px}
+.title-row{display:flex;justify-content:space-between;align-items:center}
+.title-row h2{font-size:30px;font-weight:700}
+.pill.card{background:var(--color-bg-card)}
+.seg{display:flex;gap:4px;background:var(--color-bg-card);border-radius:100px;padding:4px}
+.seg button{flex:1;padding:10px 0;border-radius:100px;color:var(--color-text-2);font-weight:500;transition:background .2s,color .2s}
+.seg button.on{background:var(--color-primary);color:#111;font-weight:600}
+.seg.small{padding:3px;gap:2px}
+.seg.small button{flex:none;padding:6px 12px;font-size:13px}
+.seg.small button.on{background:rgba(255,255,255,.12);color:var(--color-text)}
+
+.hero{position:relative;height:262px;border-radius:32px;background:var(--color-bg-card);overflow:hidden;cursor:pointer}
+.hero img{position:absolute;width:240px;height:240px;left:196px;top:50px;mix-blend-mode:lighten;pointer-events:none}
+.hero .txt{position:relative;padding:24px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:100px;padding:6px 12px;font-size:13px;font-weight:600;background:var(--color-primary-bg);color:var(--color-primary)}
+.chip.ok{background:var(--color-success-bg);color:var(--color-success)}
+.svc{display:flex;align-items:center;gap:8px;font-weight:600;font-size:19px}
+.logo{flex:none;display:grid;place-items:center;border-radius:50%;font-weight:700;color:#fff}
+.big{font-family:var(--font-display);font-weight:700;font-size:40px;line-height:1.05;color:var(--color-primary)}
+.muted{color:var(--color-text-2);font-size:13px;line-height:1.4}
+.hero .muted{max-width:170px}
+.hero .big{font-size:36px}
+
+.sec-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec-h h3{font-size:22px;font-weight:700}
+.list{background:var(--color-bg-card);border-radius:28px;padding:6px 16px}
+.item{width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;text-align:left;border-bottom:1px solid rgba(255,255,255,.06)}
+.item:last-child{border-bottom:0}
+.item .mid{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.item .name{display:flex;align-items:center;gap:6px;font-weight:600;font-size:16px}
+.mine{font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;background:var(--color-primary-bg);color:var(--color-primary)}
+.track{width:150px;height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.track i{display:block;height:100%;border-radius:3px;background:rgba(255,255,255,.35);transition:width .4s}
+.item.top .track i{background:var(--color-primary)}
+.item .val{text-align:right;display:flex;flex-direction:column;gap:2px}
+.item .val b{font-weight:600;font-size:16px}
+.item.top .val b{color:var(--color-primary)}
+.item .val small{font-size:12px;color:var(--color-text-2)}
+.item .val small.up{color:var(--color-success)}
+.item .chev{color:var(--color-text-2);font-size:22px}
+.link{color:var(--color-primary);font-weight:500;font-size:13px}
+
+.carousel{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:0 16px;scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.win{flex:none;width:232px;scroll-snap-align:start;border-radius:28px;background:var(--color-bg-card);padding:18px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.win .when{font-size:13px;font-weight:500;opacity:.6}
+.win .time{font-family:var(--font-display);font-weight:600;font-size:20px}
+.win .s{display:flex;align-items:center;gap:8px;font-weight:500;font-size:14px}
+.win .rng{font-weight:700;font-size:17px;color:var(--color-primary)}
+.win .btn-sm{border-radius:100px;padding:8px 12px;font-size:13px;font-weight:600;background:var(--color-fill-subtle)}
+.win.first{background:var(--color-primary);color:#111}
+.win.first .rng{color:#111}
+.win.first .btn-sm{background:#111;color:var(--color-primary)}
+.btn-sm.done{background:var(--color-success-bg)!important;color:var(--color-success)!important}
+
+.heat{background:var(--color-bg-card);border-radius:28px;padding:18px;display:flex;flex-direction:column;gap:8px;position:relative}
+.heat .hrow{display:flex;gap:4px;align-items:center}
+.heat .hrow .d{width:26px;font-size:13px;font-weight:500;color:var(--color-text-2)}
+.heat .hrow .d.today{color:var(--color-primary);font-weight:700}
+.heat .hrow .h{flex:1;text-align:center;font-size:11px;color:var(--color-text-2)}
+.cell{flex:1;height:34px;border-radius:10px;font-size:11px;font-weight:700;color:#111;display:grid;place-items:center;transition:transform .15s}
+.cell:active{transform:scale(.92)}
+.cell.now{box-shadow:inset 0 0 0 2px #fff}
+.cell.sel{box-shadow:inset 0 0 0 2px #fff,0 0 0 3px rgba(255,184,0,.35)}
+.legend{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--color-text-2);padding-top:6px}
+.legend i{width:64px;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(255,184,0,.1),#FFB800)}
+.heat-tip{background:var(--color-bg-card-2);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:14px}
+.heat-tip b{color:var(--color-primary)}
+
+.ai{background:var(--color-bg-card);border-radius:28px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.ai .chips{display:flex;flex-wrap:wrap;gap:8px}
+.ai .chips button{border-radius:100px;background:var(--color-fill-subtle);padding:8px 12px;font-size:13px;font-weight:500}
+.ai-answer{background:var(--color-bg-card-2);border-radius:20px;padding:14px;font-size:14px;line-height:1.45;display:none}
+.ai-answer.on{display:block}
+.ai-answer b{color:var(--color-primary)}
+
+.foot{font-size:12px;color:var(--color-text-2);line-height:1.4;padding-bottom:16px}
+
+/* bottom chrome */
+.fade{position:absolute;left:0;right:0;bottom:0;height:140px;background:linear-gradient(rgba(11,11,13,0),rgba(11,11,13,.95) 55%,var(--color-bg-page));pointer-events:none;z-index:10}
+.tabbar{position:absolute;left:8px;right:8px;bottom:30px;display:flex;gap:8px;align-items:center;z-index:11}
+.tabs{flex:1;height:68px;border-radius:40px;background:rgba(31,31,35,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:6px;display:flex;gap:4px}
+.tabs button{flex:1;border-radius:32px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:500;color:var(--color-text-2)}
+.tabs button.on{background:rgba(255,255,255,.1);color:var(--color-primary)}
+.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fab{flex:none;width:68px;height:68px;border-radius:34px;background:var(--color-primary);color:#111;font-size:34px;font-weight:400;display:grid;place-items:center;box-shadow:0 6px 18px rgba(255,184,0,.35);transition:transform .15s}
+.fab:active{transform:scale(.94)}
+.home-ind{position:absolute;left:50%;bottom:8px;width:134px;height:5px;border-radius:3px;background:var(--color-text);transform:translateX(-50%);z-index:30}
+
+/* onboarding */
+.ob{padding-bottom:40px}
+.ob img{position:absolute;width:200px;height:200px;right:-6px;top:92px;mix-blend-mode:lighten;pointer-events:none}
+.ob .content{padding-top:126px;gap:16px}
+.ob h2{font-size:28px;font-weight:700;line-height:1.15;max-width:290px}
+.group{display:flex;flex-direction:column;gap:8px}
+.group .gh{display:flex;justify-content:space-between;align-items:center}
+.group .gh b{font-size:17px;font-weight:600}
+.tiles{display:flex;gap:8px}
+.tile{flex:1;border-radius:24px;background:var(--color-bg-card);padding:16px 14px;display:flex;flex-direction:column;gap:4px;text-align:left;min-height:96px;transition:background .2s}
+.tile i{font-style:normal;font-weight:700;height:18px}
+.tile b{font-size:17px;font-weight:600}
+.tile small{font-size:12px;color:var(--color-text-2)}
+.tile.on{background:var(--color-primary);color:#111}
+.tile.on small{color:rgba(17,17,17,.65)}
+.svc-chips{display:flex;flex-wrap:wrap;gap:8px}
+.svc-chip{display:inline-flex;align-items:center;gap:8px;border-radius:100px;background:var(--color-bg-card);padding:6px 14px 6px 6px;font-weight:500;font-size:15px;transition:background .2s}
+.svc-chip.on{background:var(--color-primary-bg);color:var(--color-primary);font-weight:600}
+.svc-chip.on::after{content:"✓";font-weight:700}
+.btn{width:100%;height:54px;border-radius:100px;font-weight:600;font-size:17px;display:grid;place-items:center;transition:transform .15s,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--color-primary);color:#111}
+.btn.secondary{background:var(--color-fill-subtle)}
+.btn[disabled]{background:var(--color-bg-card-2);color:var(--color-text-2);cursor:default}
+.skip{color:var(--color-text-2);font-weight:500;text-align:center;padding:6px}
+
+/* empty */
+.empty{position:relative;height:380px;border-radius:32px;background:var(--color-bg-card);overflow:hidden}
+.empty img{position:absolute;width:230px;height:230px;left:96px;top:-36px;mix-blend-mode:lighten}
+.empty .txt{position:absolute;left:0;right:0;bottom:0;padding:0 24px 24px;display:flex;flex-direction:column;gap:10px}
+.empty h3{font-size:24px;font-weight:700;line-height:1.2}
+.empty p{font-size:15px;color:var(--color-text-2);line-height:1.45}
+.prog{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
+.prog i{display:block;height:100%;width:19%;background:var(--color-primary);border-radius:4px}
+
+/* stub */
+.stub{display:flex;flex-direction:column;gap:14px;padding:40px 24px;text-align:center;align-items:center}
+.stub h3{font-size:22px;font-weight:700}
+.stub p{color:var(--color-text-2);line-height:1.45}
+
+/* sheet */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.overlay.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:calc(100% - 56px);overflow-y:auto;scrollbar-width:none;background:var(--color-bg-card);border-radius:32px 32px 0 0;padding:10px 16px 34px;display:flex;flex-direction:column;gap:16px;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:21}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.on{transform:none}
+.grab{width:36px;height:5px;border-radius:3px;background:rgba(255,255,255,.25);margin:0 auto}
+.sh-head{display:flex;align-items:center;gap:12px}
+.sh-head .t{flex:1}
+.sh-head .t b{display:block;font-size:22px;font-weight:700}
+.close{width:36px;height:36px;border-radius:18px;background:var(--color-fill-subtle);color:var(--color-text-2);font-weight:600;display:grid;place-items:center}
+.now-row{display:flex;gap:10px;align-items:center}
+.now-row .big{font-size:36px}
+.chart-card{background:var(--color-bg-card-2);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chart-legend{display:flex;gap:14px;font-size:12px;color:var(--color-text-2);align-items:center}
+.chart-legend span{display:inline-flex;align-items:center;gap:6px}
+.chart-legend i{display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--color-primary)}
+.chart-legend i.dash{background:repeating-linear-gradient(90deg,var(--color-primary) 0 4px,transparent 4px 7px)}
+.chart-legend i.grey{background:rgba(255,255,255,.3)}
+svg.chart{width:100%;height:auto;display:block;touch-action:none}
+.wins{background:var(--color-bg-card-2);border-radius:24px;padding:4px 16px}
+.wins .w{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.wins .w:last-child{border-bottom:0}
+.wins .w div{flex:1}
+.wins .w b{display:block;font-weight:600;font-size:16px}
+.wins .w small{color:var(--color-primary);font-size:13px}
+.info{display:flex;gap:8px;background:rgba(255,255,255,.05);border-radius:18px;padding:10px 12px;font-size:12px;color:var(--color-text-2);line-height:1.4}
+.acts{display:flex;flex-direction:column;gap:8px}
+.field{background:var(--color-bg-card-2);border-radius:20px;padding:12px 16px;display:flex;flex-direction:column;gap:4px}
+.field label{font-size:12px;color:var(--color-text-2)}
+.field input{background:none;border:0;outline:0;color:var(--color-text);font:600 22px var(--font-ui);width:100%}
+.fields{display:flex;gap:8px}
+.fields .field{flex:1}
+.stepper{display:flex;align-items:center;justify-content:space-between}
+.stepper button{width:32px;height:32px;border-radius:16px;background:var(--color-fill-subtle);font-size:18px}
+.stepper b{font-size:22px;font-weight:600}
+.calc{display:flex;justify-content:space-between;align-items:center;background:var(--color-primary-bg);border-radius:20px;padding:14px 16px}
+.calc b{font-family:var(--font-display);color:var(--color-primary);font-size:20px}
+.hscroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll .svc-chip{flex:none}
+
+.toast{position:absolute;left:16px;right:16px;bottom:112px;background:#F5F5F7;color:#111;border-radius:20px;padding:14px 16px;font-weight:500;font-size:14px;display:flex;gap:10px;align-items:center;transform:translateY(20px);opacity:0;pointer-events:none;transition:all .25s;z-index:40}
+.toast.on{transform:none;opacity:1}
+.toast i{font-style:normal;width:24px;height:24px;border-radius:12px;background:var(--color-success);color:#fff;display:grid;place-items:center;font-size:13px;flex:none}
+
+.skel{border-radius:28px;background:linear-gradient(90deg,var(--color-bg-card) 0%,#222226 50%,var(--color-bg-card) 100%);background-size:200% 100%;animation:sh 1.2s linear infinite}
+@keyframes sh{from{background-position:200% 0}to{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="about">
+    <div class="over">Концепт · тестовое задание · UX/UI</div>
+    <h1>Сравни доход: ответ за 3 секунды</h1>
+    <p class="lead">Редизайн главного раздела Telegram mini-app для курьеров. Экран отвечает на один вопрос: где платят больше прямо сейчас и когда выходить на неделе — с учётом режима и своих сервисов.</p>
+    <div class="card">
+      <div class="row"><div class="num">01</div><div><b>Первый запуск</b><span>Выбери режим и свои сервисы — все цифры пересчитаются под тебя.</span></div></div>
+      <div class="row"><div class="num">02</div><div><b>Нажми на сервис</b><span>Откроется шторка: график дня, прогноз диапазоном и напоминание перед пиком.</span></div></div>
+      <div class="row"><div class="num">03</div><div><b>Тепловая карта</b><span>Тапни по ячейке недели — покажем лучший сервис в этом окне.</span></div></div>
+      <div class="row"><div class="num">04</div><div><b>Авто и «+»</b><span>Переключи на «Авто» — пустое состояние. Кнопка «+» — добавить доход в один тап.</span></div></div>
+    </div>
+    <div class="links">
+      <a class="accent" href="https://www.figma.com/design/hpPL3zOgnmtbx6UNUt9wLG/Untitled?node-id=8-2" target="_blank" rel="noopener">Макет в Figma ↗</a>
+      <button id="reset">Начать заново</button>
+      <a href="https://uxuidesign.ru" target="_blank" rel="noopener">Портфолио ↗</a>
+    </div>
+    <p class="note">Дизайн: Максим Кощеев, UX/UI и продуктовый дизайнер. Концепт к тестовому заданию, все данные и ставки вымышлены. Логотипы сервисов заменены буквами.</p>
+  </aside>
+
+  <div class="phone">
+    <div class="app" id="app">
+
+      <!-- ONBOARDING -->
+      <section class="screen ob" id="s-onb">
+        <img src="img/bag.jpg" alt="">
+        <div class="status"><span>12:00</span><span class="bat">78</span></div>
+        <div class="tg"><span class="pill js-close">✕&nbsp; Закрыть</span><span class="pill">⌄ &nbsp; •••</span></div>
+        <div class="content">
+          <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">
+            <span class="chip">Настройка · 15 секунд</span>
+            <h2>Покажем, где платят больше — именно тебе</h2>
+          </div>
+          <div class="group">
+            <div class="gh"><b>Как ты доставляешь?</b></div>
+            <div class="tiles" id="ob-modes"></div>
+          </div>
+          <div class="group">
+            <div class="gh"><b>Где ты работаешь?</b><span class="muted">можно несколько</span></div>
+            <div class="svc-chips" id="ob-svcs"></div>
+          </div>
+          <button class="btn primary" id="ob-go">Показать ставки</button>
+          <button class="skip" id="ob-skip">Пропустить — покажем все сервисы</button>
+        </div>
+      </section>
+
+      <!-- MAIN -->
+      <section class="screen" id="s-main">
+        <div class="sticky-top">
+          <div class="status"><span>12:00</span><span class="bat">78</span></div>
+          <div class="tg"><span class="pill js-close">✕&nbsp; Закрыть</span><span class="pill">⌄ &nbsp; •••</span></div>
+        </div>
+        <div class="content">
+          <div class="title-row"><h2>Сравни доход</h2><button class="pill card" id="city">◉ Москва ⌄</button></div>
+          <div class="seg" id="mode-seg"></div>
+          <div id="main-body"></div>
+        </div>
+      </section>
+
+      <!-- STUB -->
+      <section class="screen" id="s-stub">
+        <div class="status"><span>12:00</span><span class="bat">78</span></div>
+        <div class="tg"><span class="pill js-close">✕&nbsp; Закрыть</span><span class="pill">⌄ &nbsp; •••</span></div>
+        <div class="stub">
+          <h3 id="stub-t">Мой доход</h3>
+          <p>В этом концепте переделан только раздел «Сравни доход». Комментарии к остальным разделам — в макете Figma.</p>
+          <button class="btn primary" id="stub-back" style="max-width:260px">Вернуться к сравнению</button>
+        </div>
+      </section>
+
+      <div class="fade" id="fade"></div>
+      <div class="tabbar" id="tabbar">
+        <div class="tabs">
+          <button class="on" data-tab="main"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/></svg>Сравни</button>
+          <button data-tab="Мой доход"><svg viewBox="0 0 24 24"><path d="M6 20v-7M12 20V5M18 20v-10"/></svg>Мой доход</button>
+          <button data-tab="Обсудить"><svg viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 3v-3a1 1 0 0 1-1-1z"/></svg>Обсудить</button>
+        </div>
+        <button class="fab" id="fab" aria-label="Добавить доход">+</button>
+      </div>
+
+      <div class="overlay" id="overlay"></div>
+      <div class="sheet" id="sheet"></div>
+      <div class="toast" id="toast"><i>✓</i><span></span></div>
+      <div class="home-ind"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SVC=[
+  {id:'eda',name:'Я.Еда',l:'Е',c:'#FFD12E',tc:'#111',now:420,usual:250},
+  {id:'mgn',name:'Магнит',l:'М',c:'#E5303A',now:280,usual:250},
+  {id:'dst',name:'Я.Доставка',l:'Д',c:'#FF5A1F',now:190,usual:200},
+  {id:'kup',name:'Купер',l:'К',c:'#1DB954',now:160,usual:174},
+  {id:'smk',name:'Самокат',l:'С',c:'#FF3D7F',now:150,usual:150},
+  {id:'vkv',name:'ВкусВилл',l:'В',c:'#3FAF4A',now:140,usual:144},
+  {id:'lvk',name:'Я.Лавка',l:'Л',c:'#2FA8FF',now:130,usual:144},
+  {id:'x5',name:'X5',l:'X',c:'#00A651',now:125,usual:130}
+];
+const MODES=[{id:'walk',name:'Пешком',sub:'чаще всего',k:1},{id:'bike',name:'Вело',sub:'+30% к ставке',k:1.3},{id:'auto',name:'Авто',sub:'мало данных',k:0}];
+const store={get(k,d){try{const v=localStorage.getItem('sd_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('sd_'+k,JSON.stringify(v))}catch(e){}}};
+const S={mode:store.get('mode','walk'),mine:store.get('mine',['kup','lvk']),onboarded:store.get('onb',false),filter:'all',reminders:store.get('rem',{}),heatSel:null};
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString('ru-RU').replace(/,/g,' ');
+const r10=n=>Math.round(n/10)*10;
+const logo=(s,size=32)=>`<span class="logo" style="width:${size}px;height:${size}px;background:${s.c};color:${s.tc||'#fff'};font-size:${size*.45}px">${s.l}</span>`;
+const byId=id=>SVC.find(s=>s.id===id);
+const k=()=>MODES.find(m=>m.id===S.mode).k;
+const modeName=()=>MODES.find(m=>m.id===S.mode).name;
+
+function toast(t){const el=$('#toast');el.querySelector('span').textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));const chrome=id!=='s-onb';$('#tabbar').style.display=chrome?'flex':'none';$('#fade').style.display=chrome?'block':'none';document.getElementById(id).scrollTop=0}
+
+/* ---------- onboarding ---------- */
+function renderOnb(){
+  $('#ob-modes').innerHTML=MODES.map(m=>`<button class="tile ${S.mode===m.id?'on':''}" data-m="${m.id}"><i>${S.mode===m.id?'✓':''}</i><b>${m.name}</b><small>${m.sub}</small></button>`).join('');
+  $('#ob-svcs').innerHTML=SVC.map(s=>`<button class="svc-chip ${S.mine.includes(s.id)?'on':''}" data-s="${s.id}">${logo(s,26)}${s.name}</button>`).join('');
+}
+$('#ob-modes').onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;S.mode=b.dataset.m;renderOnb()};
+$('#ob-svcs').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;const id=b.dataset.s;S.mine=S.mine.includes(id)?S.mine.filter(x=>x!==id):[...S.mine,id];renderOnb()};
+$('#ob-go').onclick=()=>{S.onboarded=true;store.set('onb',true);store.set('mode',S.mode);store.set('mine',S.mine);goMain(true)};
+$('#ob-skip').onclick=()=>{S.onboarded=true;S.mine=[];store.set('onb',true);store.set('mine',[]);goMain(true)};
+
+/* ---------- main ---------- */
+function renderSeg(){$('#mode-seg').innerHTML=MODES.map(m=>`<button class="${S.mode===m.id?'on':''}" data-m="${m.id}">${m.name}</button>`).join('')}
+$('#mode-seg').onclick=e=>{const b=e.target.closest('[data-m]');if(!b||b.dataset.m===S.mode)return;S.mode=b.dataset.m;store.set('mode',S.mode);renderSeg();loadBody()};
+
+function loadBody(){
+  const body=$('#main-body');
+  body.innerHTML=`<div style="display:flex;flex-direction:column;gap:20px"><div class="skel" style="height:262px"></div><div class="skel" style="height:24px;width:60%;border-radius:12px"></div><div class="skel" style="height:380px"></div></div>`;
+  clearTimeout(loadBody.t);loadBody.t=setTimeout(renderBody,450);
+}
+function rows(){const m=k();let r=SVC.map(s=>({...s,v:r10(s.now*m),u:r10(s.usual*m)})).sort((a,b)=>b.v-a.v);return r}
+function renderBody(){
+  const body=$('#main-body');
+  if(S.mode==='auto'){
+    body.innerHTML=`<div style="display:flex;flex-direction:column;gap:20px">
+      <div class="empty"><img src="img/car.jpg" alt=""><div class="txt"><h3>По авто пока мало данных</h3><p>Собираем ставки курьеров на авто в Москве — сейчас их 38, для честного сравнения нужно от 200. Добавь свои смены, и сравнение появится быстрее.</p><div class="prog"><i></i></div><span class="muted">38 из 200 курьеров</span></div></div>
+      <button class="btn primary" id="auto-add">Добавить смену на авто</button>
+      <button class="btn secondary" id="auto-walk">Показать ставки пешком</button></div>`;
+    $('#auto-add').onclick=()=>openAdd();
+    $('#auto-walk').onclick=()=>{S.mode='walk';store.set('mode','walk');renderSeg();loadBody()};
+    return;
+  }
+  const all=rows();const top=all[0];const mine=all.filter(s=>S.mine.includes(s.id));const myBest=mine[0];
+  const list=S.filter==='mine'&&mine.length?mine:all;
+  const diff=myBest&&myBest.id!==top.id?`<span class="chip ok">+${fmt(top.v-myBest.v)} ₽/ч к твоему</span><span class="muted">Твой ${myBest.name} сейчас — ${fmt(myBest.v)}&nbsp;₽/ч. Пик до 14:00 и с 19:00</span>`
+    :myBest?`<span class="chip ok">Твой сервис сейчас лидер</span><span class="muted">Пик до 14:00 и с 19:00</span>`
+    :`<span class="chip ok">+${Math.round((top.v/top.u-1)*100)}% к обычному</span><span class="muted">Отметь свои сервисы — покажем разницу в рублях</span>`;
+  const max=top.v;
+  body.innerHTML=`<div style="display:flex;flex-direction:column;gap:20px">
+    <div class="hero" data-open="${top.id}"><img src="img/bag.jpg" alt=""><div class="txt">
+      <span class="chip">⚡ Сейчас выгоднее всего</span>
+      <span class="svc">${logo(top,26)}${top.name}</span>
+      <span class="big">${fmt(top.v)} ₽/ч</span>${diff}</div></div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="sec-h"><div><h3>Ставки сейчас</h3><span class="muted">${modeName()} · за последний час</span></div>
+        <div class="seg small" id="filter"><button data-f="all" class="${S.filter==='all'||!mine.length?'on':''}">Все ${all.length}</button><button data-f="mine" class="${S.filter==='mine'&&mine.length?'on':''}">Мои ${mine.length}</button></div></div>
+      <div class="list" id="list">${list.map(s=>`<button class="item ${s.id===top.id?'top':''}" data-open="${s.id}">${logo(s)}
+        <span class="mid"><span class="name">${s.name}${S.mine.includes(s.id)?'<span class="mine">мой</span>':''}</span><span class="track"><i style="width:${Math.round(s.v/max*100)}%"></i></span></span>
+        <span class="val"><b>${fmt(s.v)} ₽/ч</b>${delta(s)}</span><span class="chev">›</span></button>`).join('')}</div>
+      <div class="sec-h"><span class="muted">Нажми на сервис — покажем график и прогноз</span><button class="link" id="edit-mine">Мои сервисы</button></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="sec-h"><div><h3>Когда выходить</h3><span class="muted">Лучшие окна на 7 дней · прогноз</span></div><span class="muted" id="car-count">01 —— 03</span></div>
+      <div class="carousel" id="carousel">${windows().map((w,i)=>`<div class="win ${i===0?'first':''}">
+        <span class="when">${w.d}</span><span class="time">${w.t}</span><span class="s">${logo(byId(w.s),22)}${byId(w.s).name}</span><span class="rng">${w.r}</span>
+        <button class="btn-sm ${S.reminders[w.key]?'done':''}" data-rem="${w.key}" data-label="${w.at}">${S.reminders[w.key]?'✓ Напомню в '+w.at:'Напомнить в '+w.at}</button></div>`).join('')}</div>
+    </div>
+
+    <div class="heat" id="heat">${heatHTML()}</div>
+
+    <div class="ai"><div style="display:flex;gap:10px;align-items:center"><span class="logo" style="width:32px;height:32px;background:#5B77F4;font-size:14px">✦</span><div><b style="font-weight:600;font-size:16px">Спроси помощника</b><div class="muted">Ответит по этим же данным</div></div></div>
+      <div class="chips" id="ai-chips"><button>Куда выйти вечером?</button><button>Почему Еда выросла?</button><button>Сравни с моим доходом</button></div>
+      <div class="ai-answer" id="ai-answer"></div></div>
+
+    <p class="foot">Данные: средние ставки 12 400 курьеров в Москве за 4 недели · обновлено в 12:00. Концепт, цифры вымышлены.</p></div>`;
+  bindMain();
+}
+function delta(s){const p=Math.round((s.v/s.u-1)*100);return `<small class="${p>0?'up':''}">${p>0?'+':p<0?'−':''}${Math.abs(p)}% к обычному</small>`}
+function windows(){const m=k();return[
+  {key:'fri19',d:'Сегодня, пт',t:'19:00–22:00',s:'eda',r:`${fmt(r10(380*m))}–${fmt(r10(430*m))} ₽/ч`,at:'18:30'},
+  {key:'sat12',d:'Сб, 31 окт',t:'12:00–15:00',s:'dst',r:`${fmt(r10(360*m))}–${fmt(r10(410*m))} ₽/ч`,at:'11:30'},
+  {key:'sun18',d:'Вс, 1 ноя',t:'18:00–21:00',s:'smk',r:`${fmt(r10(330*m))}–${fmt(r10(370*m))} ₽/ч`,at:'17:30'}]}
+const DAYS=['Пт','Сб','Вс','Пн','Вт','Ср','Чт'],HOURS=['06','09','12','15','18','21'];
+const HV=[[.3,.45,.9,.55,.85,.6],[.25,.5,.8,.6,.7,.45],[.2,.35,.55,.5,.75,.5],[.3,.5,.45,.4,.6,.35],[.3,.45,.5,.4,.65,.4],[.25,.4,.55,.45,.7,.45],[.3,.45,.5,.5,.72,.5]];
+const HS=[['vkv','x5','eda','mgn','eda','dst'],['kup','dst','dst','mgn','eda','smk'],['kup','lvk','dst','mgn','smk','eda'],['vkv','dst','eda','mgn','dst','smk'],['x5','dst','eda','mgn','eda','smk'],['vkv','dst','eda','mgn','eda','smk'],['kup','dst','eda','mgn','eda','smk']];
+const LBL={'0-2':1,'0-4':1,'1-2':1,'2-4':1};
+const hv=(v)=>r10((120+v*340)*k());
+function heatHTML(){
+  let h=`<div class="sec-h" style="padding-bottom:6px"><b style="font-size:17px;font-weight:600">Неделя по часам</b><span class="muted">тапни по ячейке</span></div>
+  <div class="hrow"><span class="d"></span>${HOURS.map(x=>`<span class="h">${x}</span>`).join('')}</div>`;
+  DAYS.forEach((d,ri)=>{h+=`<div class="hrow"><span class="d ${ri===0?'today':''}">${d}</span>`+HV[ri].map((v,ci)=>{const past=ri===0&&ci<2;const bg=past?'rgba(255,255,255,.04)':`rgba(255,184,0,${(.08+.92*Math.pow(v,1.6)).toFixed(2)})`;const key=ri+'-'+ci;const cls=['cell'];if(ri===0&&ci===2)cls.push('now');if(S.heatSel===key)cls.push('sel');return `<button class="${cls.join(' ')}" style="background:${bg}" data-c="${key}" ${past?'disabled':''}>${LBL[key]?hv(v):''}</button>`}).join('')+`</div>`});
+  h+=`<div class="legend">ниже обычного<i></i>выше · ▢ сейчас</div>`;
+  if(S.heatSel){const [ri,ci]=S.heatSel.split('-').map(Number);const s=byId(HS[ri][ci]);const v=hv(HV[ri][ci]);const from=+HOURS[ci];h+=`<div class="heat-tip">${logo(s,28)}<div style="flex:1">${ri===0?'Сегодня':DAYS[ri]}, ${String(from).padStart(2,'0')}:00–${String(from+3).padStart(2,'0')}:00 · ${s.name}<br><b>${fmt(r10(v*.9))}–${fmt(r10(v*1.05))} ₽/ч</b></div><button class="btn-sm" style="border-radius:100px;padding:8px 12px;font-size:13px;font-weight:600;background:var(--color-fill-subtle)" data-open="${s.id}">График</button></div>`}
+  return h;
+}
+function bindMain(){
+  const body=$('#main-body');
+  body.onclick=e=>{
+    const o=e.target.closest('[data-open]');const rem=e.target.closest('[data-rem]');const f=e.target.closest('[data-f]');const c=e.target.closest('[data-c]');
+    if(rem){remind(rem.dataset.rem,rem.dataset.label);rem.classList.add('done');rem.textContent='✓ Напомню в '+rem.dataset.label;return}
+    if(f){if(f.dataset.f==='mine'&&!S.mine.length){toast('Сначала отметь свои сервисы');return}S.filter=f.dataset.f;renderBody();return}
+    if(c){S.heatSel=S.heatSel===c.dataset.c?null:c.dataset.c;$('#heat').innerHTML=heatHTML();return}
+    if(e.target.id==='edit-mine'){renderOnb();show('s-onb');return}
+    if(o){openService(o.dataset.open);return}
+  };
+  const car=$('#carousel');car.onscroll=()=>{const i=Math.round(car.scrollLeft/242);$('#car-count').textContent=`0${i+1} —— 03`};
+  const answers={0:`Сегодня вечером лучше всего <b>Я.Еда</b>: с 19:00 до 22:00 обычно <b>380–430 ₽/ч</b>${S.mode==='bike'?' (на вело на 30% больше)':''}. Могу напомнить в 18:30.`,1:`В обед в Еде мало курьеров на линии и много заказов, поэтому ставка <b>+68% к обычной пятнице</b>. Такой пик держится до 14:00.`,2:`На этой неделе у тебя <b>857 ₽/ч</b> в Я.Доставке. Это выше средней по городу на 12%. Вечером в Еде можно заработать ещё больше.`};
+  $('#ai-chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=[...b.parentNode.children].indexOf(b);const a=$('#ai-answer');a.innerHTML='Думаю…';a.classList.add('on');setTimeout(()=>a.innerHTML=answers[i],600)};
+}
+function remind(key,at){S.reminders[key]=true;store.set('rem',S.reminders);toast('Напомню в боте в '+at)}
+
+/* ---------- sheets ---------- */
+function openSheet(html){const sh=$('#sheet');sh.innerHTML='<div class="grab"></div>'+html;sh.scrollTop=0;sh.classList.add('on');$('#overlay').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');$('#overlay').classList.remove('on')}
+$('#overlay').onclick=closeSheet;
+
+function curves(s){
+  const m=k();const ratio=s.now/420;
+  const usual=[140,160,190,210,230,240,250,240,220,200,190,200,230,260,270,250,210,170,150].map(v=>v*ratio*m);
+  const fact=[150,170,200,230,260,320,420].map(v=>v*ratio*m);
+  const fc=[420,400,330,270,240,250,300,390,430,410,330,250,200].map(v=>v*ratio*m);
+  return {usual,fact,fc};
+}
+function chartSVG(s){
+  const {usual,fact,fc}=curves(s);const W=326,H=150;const top=Math.max(...fc,...usual)*1.2;const scaleTop=Math.ceil(top/100)*100;
+  const X=h=>(h-6)/18*W,Y=v=>H-v/scaleTop*H;const P=pts=>pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const up=usual.map((v,i)=>[X(6+i),Y(v)]),fp=fact.map((v,i)=>[X(6+i),Y(v)]),cp=fc.map((v,i)=>[X(12+i),Y(v)]);
+  const band=fc.map((v,i)=>[X(12+i),Y(v*1.12)]).concat(fc.map((v,i)=>[X(12+i),Y(v*.88)]).reverse());
+  const grid=[.2,.6,1].map(f=>{const v=Math.round(scaleTop*f/10)*10;return `<line x1="0" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(255,255,255,.06)"/><text x="0" y="${Y(v)-4}" fill="#8E8E93" font-size="10">${v}</text>`}).join('');
+  const xl=['06','09','12','15','18','21','24'].map((h,i)=>`<text x="${Math.min(W-12,X(6+i*3)-(i?6:0))}" y="${H+18}" fill="#8E8E93" font-size="10">${h}</text>`).join('');
+  return `<svg class="chart" viewBox="0 -4 ${W} ${H+26}" id="chart">
+    <rect x="${X(19)}" y="0" width="${X(22)-X(19)}" height="${H}" rx="10" fill="rgba(255,184,0,.08)"/><text x="${X(19)+6}" y="12" fill="#FFB800" font-size="10" font-weight="500">лучшее окно</text>
+    ${grid}<path d="${P(up)}" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
+    <path d="${P(band)}Z" fill="rgba(255,184,0,.14)"/>
+    <path d="${P(cp)}" fill="none" stroke="#FFB800" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>
+    <path d="${P(fp)}" fill="none" stroke="#FFB800" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="${X(12)}" x2="${X(12)}" y1="0" y2="${H}" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+    <g id="cursor" style="display:none"><line id="cl" y1="0" y2="${H}" stroke="#fff" stroke-width="1"/><circle id="cc" r="5" fill="#FFB800" stroke="#232327" stroke-width="2"/></g>
+    <circle cx="${X(12)}" cy="${Y(fact[6])}" r="6" fill="#FFB800" stroke="#232327" stroke-width="3"/>
+    ${xl}</svg>`;
+}
+function openService(id){
+  const s=byId(id);const m=k();const v=r10(s.now*m),u=r10(s.usual*m);const p=Math.round((v/u-1)*100);
+  const {fc}=curves(s);const best=[r10(fc[7]*.9),r10(fc[8]*1.0)];const key='svc_'+id;
+  openSheet(`<div class="sh-head">${logo(s,44)}<div class="t"><b>${s.name}</b><span class="muted">${modeName()} · Москва · пт, 30 окт</span></div><button class="close" id="sh-x">✕</button></div>
+    <div class="now-row"><span class="big">${fmt(v)} ₽/ч</span><div><div style="color:${p>0?'var(--color-success)':'var(--color-text-2)'};font-weight:600;font-size:13px">${p>0?'+':''}${p}% к обычной пятнице</div><div class="muted">обычно в 12:00 — ${fmt(u)} ₽/ч</div></div></div>
+    <div class="chart-card"><div class="chart-legend"><span><i></i>сегодня</span><span><i class="dash"></i>прогноз</span><span><i class="grey"></i>обычная пт</span></div>${chartSVG(s)}<div class="muted" id="chart-read">Веди пальцем по графику — покажем ставку по часам</div></div>
+    <div class="wins"><div class="w"><div><b>Сейчас — 14:00</b><small>${fmt(r10(v*.95))}–${fmt(v)} ₽/ч</small></div><span class="chip ok" style="font-size:12px;padding:4px 10px">идёт сейчас</span></div>
+      <div class="w"><div><b>19:00 — 22:00</b><small>${fmt(best[0])}–${fmt(best[1])} ₽/ч</small></div><span class="chip" style="font-size:12px;padding:4px 10px">лучшее</span></div></div>
+    <div class="info"><span>ⓘ</span><span>Прогноз по данным 1 240 курьеров ${s.name} за 4 недели. Обычно ошибаемся не больше чем на ±12%.</span></div>
+    <div class="acts"><button class="btn primary" id="sh-rem">${S.reminders[key]?'✓ Напомню в 18:30':'Напомнить в 18:30'}</button><button class="btn secondary" id="sh-chat">Чат курьеров ${s.name} ↗</button></div>`);
+  $('#sh-x').onclick=closeSheet;
+  $('#sh-rem').onclick=e=>{remind(key,'18:30');e.target.textContent='✓ Напомню в 18:30'};
+  $('#sh-chat').onclick=()=>toast('Откроем чат сообщества в Telegram');
+  const svg=$('#chart');const {fact}=curves(s);const W=326;
+  const series=h=>h<=12?fact[h-6]:fc[h-12];
+  const move=ev=>{const r=svg.getBoundingClientRect();const x=((ev.touches?ev.touches[0].clientX:ev.clientX)-r.left)/r.width*W;const h=Math.max(6,Math.min(24,Math.round(x/W*18+6)));
+    const H=150;const scaleTop=Math.ceil(Math.max(...fc,...curves(s).usual)*1.2/100)*100;const X=(h-6)/18*W,Y=H-series(h)/scaleTop*H;
+    svg.querySelector('#cursor').style.display='';svg.querySelector('#cl').setAttribute('x1',X);svg.querySelector('#cl').setAttribute('x2',X);svg.querySelector('#cc').setAttribute('cx',X);svg.querySelector('#cc').setAttribute('cy',Y);
+    $('#chart-read').innerHTML=`<b style="color:var(--color-text)">${String(h).padStart(2,'0')}:00</b> · ${h<=12?'факт':'прогноз'} <b style="color:var(--color-primary)">${h<=12?fmt(r10(series(h))):fmt(r10(series(h)*.88))+'–'+fmt(r10(series(h)*1.12))} ₽/ч</b>`};
+  svg.addEventListener('pointermove',move);svg.addEventListener('pointerdown',move);svg.addEventListener('touchmove',move,{passive:true});
+}
+function openAdd(){
+  const mode=S.mode;let svc=S.mine[0]||'kup';let hours=7.5;
+  const render=()=>{
+    const income=+($('#add-sum')?.value||0);
+    $('#add-calc').innerHTML=income?`<span>Доход в час</span><b>${fmt(income/hours)} ₽/ч</b>`:`<span class="muted">Укажи доход — посчитаем ₽/ч</span><b>—</b>`;
+    $('#add-save').disabled=!income;$('#hrs').textContent=String(hours).replace('.',',')+' ч';
+  };
+  openSheet(`<div class="sh-head"><div class="t"><b>Добавить доход</b><span class="muted">${MODES.find(m=>m.id===mode).name} · сегодня, 30 окт</span></div><button class="close" id="sh-x">✕</button></div>
+    <div class="hscroll" id="add-svcs">${(S.mine.length?SVC.filter(s=>S.mine.includes(s.id)).concat(SVC.filter(s=>!S.mine.includes(s.id))):SVC).map(s=>`<button class="svc-chip ${s.id===svc?'on':''}" data-s="${s.id}">${logo(s,26)}${s.name}</button>`).join('')}</div>
+    <div class="fields"><div class="field"><label>Доход, ₽</label><input id="add-sum" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><label>Часы на линии</label><div class="stepper"><button id="hminus">−</button><b id="hrs">7,5 ч</b><button id="hplus">+</button></div></div></div>
+    <div class="calc" id="add-calc"></div>
+    <button class="btn secondary" id="add-repeat">Как в прошлый раз: 6 000 ₽ · 7 ч</button>
+    <button class="btn primary" id="add-save" disabled>Сохранить</button>`);
+  $('#sh-x').onclick=closeSheet;
+  $('#add-svcs').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;svc=b.dataset.s;document.querySelectorAll('#add-svcs .svc-chip').forEach(x=>x.classList.toggle('on',x===b))};
+  $('#add-sum').oninput=e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,6);render()};
+  $("#hminus").onclick=()=>{hours=Math.max(.5,hours-.5);render()};$("#hplus").onclick=()=>{hours=Math.min(16,hours+.5);render()};
+  $('#add-repeat').onclick=()=>{$('#add-sum').value='6000';hours=7;render()};
+  $('#add-save').onclick=()=>{closeSheet();toast(`Сохранили: ${fmt(+$('#add-sum').value/hours)} ₽/ч в ${byId(svc).name}`)};
+  render();
+}
+
+/* ---------- chrome ---------- */
+$('#fab').onclick=openAdd;
+$('#tabbar .tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(!b)return;document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));if(b.dataset.tab==='main'){show('s-main')}else{$('#stub-t').textContent=b.dataset.tab;show('s-stub')}};
+$('#stub-back').onclick=()=>{document.querySelectorAll('.tabs button').forEach((x,i)=>x.classList.toggle('on',i===0));show('s-main')};
+$('#city').onclick=()=>toast('В концепте данные только по Москве');
+document.addEventListener('click',e=>{if(e.target.closest('.js-close'))toast('В Telegram здесь закроется mini-app')});
+$('#reset').onclick=()=>{try{Object.keys(localStorage).filter(x=>x.startsWith('sd_')).forEach(x=>localStorage.removeItem(x))}catch(e){}location.reload()};
+
+function goMain(fromOnb){renderSeg();show('s-main');loadBody();if(fromOnb)setTimeout(()=>toast(S.mine.length?'Готово: ставки посчитаны под тебя':'Показываем все сервисы'),500)}
+if(S.onboarded){goMain(false)}else{renderOnb();show('s-onb')}
+</script>
+</body>
+</html>
